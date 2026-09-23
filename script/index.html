@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TradeSim Pitch Script</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#FFF7DC; --paper:#FFFDF6; --ink:#14213D; --muted:#596780; --rule:#E6D9AE;
+  --a:#9A6B00; --a-soft:#F9EBBF; --b:#0F7B4C; --b-soft:#D6EFDF; --src:#7A4E00; --src-bg:#FBEFC7;
+  --serif:"DM Serif Display",Georgia,serif; --sans:Manrope,ui-sans-serif,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10182B; --paper:#172238; --ink:#F3EEDD; --muted:#A8B2C5; --rule:#2A3752;
+    --a:#E8B84A; --a-soft:#3A3120; --b:#4CC38A; --b-soft:#193A2D; --src:#F2D38A; --src-bg:#3A3120;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10182B; --paper:#172238; --ink:#F3EEDD; --muted:#A8B2C5; --rule:#2A3752;
+  --a:#E8B84A; --a-soft:#3A3120; --b:#4CC38A; --b-soft:#193A2D; --src:#F2D38A; --src-bg:#3A3120;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:32px 64px}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.5px;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,6vw,48px);line-height:1.05}
+h2{font-size:28px;line-height:1.1}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--a);margin:0}
+.lede{color:var(--muted);font-weight:600;margin:6px 0 0;max-width:62ch}
+.clock{display:grid;grid-template-columns:45fr 55fr;border-radius:10px;overflow:hidden;font-size:13px;font-weight:800}
+.clock div{padding:10px 14px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.clock .ca{background:var(--a-soft);color:var(--a)} .clock .cb{background:var(--b-soft);color:var(--b)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:14px;color:var(--muted);font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.part{display:flex;flex-direction:column;gap:14px}
+.part-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.part-head .who{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.part.A .who{color:var(--a)} .part.B .who{color:var(--b)}
+.note{font-size:15px;color:var(--muted);font-weight:600;margin:0;max-width:65ch}
+.slide{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.part.A .slide{border-left:4px solid var(--a)} .part.B .slide{border-left:4px solid var(--b)}
+.slide header{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.slide h3{margin:0;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.part.A h3{color:var(--a)} .part.B h3{color:var(--b)}
+.t{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.slide p{margin:0;max-width:65ch;font-size:19px;font-weight:600;line-height:1.55}
+.cue{display:block;font-size:14px !important;font-weight:700 !important;font-style:italic;color:var(--muted)}
+.src{background:var(--src-bg);color:var(--src);border-radius:4px;padding:0 5px;font-weight:800;white-space:nowrap}
+.say{font-size:13px !important;color:var(--muted);font-weight:600 !important;border-top:1px dashed var(--rule);padding-top:8px}
+.opt{opacity:.72}
+.opt::after{content:" · optional, drop if running long";font-size:12px;font-style:italic;font-weight:700;color:var(--muted)}
+.handoff{text-align:center;font-weight:800;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--b);padding:10px;border:2px dashed var(--b);border-radius:10px}
+dl{margin:0;display:flex;flex-direction:column;gap:14px}
+dt{font-weight:800}
+dd{margin:4px 0 0;color:var(--ink);font-weight:500;max-width:65ch}
+.confirm{color:var(--a);font-weight:800}
+ul.changes{margin:0;padding-left:20px;color:var(--muted);font-weight:600;font-size:15px;display:flex;flex-direction:column;gap:6px}
+body{margin:0}
+.topnav{display:flex;gap:18px;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.topnav a{color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;padding-bottom:2px}
+.topnav a:hover,.topnav a:focus-visible{color:var(--ink);border-color:var(--a)}
+.topnav a[aria-current]{color:var(--ink);border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="topnav" aria-label="TradeSim pages"><a href="../">Deck</a><a href="../script/" aria-current="page">Script</a><a href="../demo/">Demo</a></nav>
+  <header>
+    <p class="eyebrow">IIM Calcutta Seva First Innovation Challenge · 5-minute pitch</p>
+    <h1>TradeSim pitch script</h1>
+    <p class="lede">Two speakers, one story. Speaker A sets up the problem and the product. Speaker B takes over at Market Opportunity and carries the numbers to the close. Every figure below matches the current deck.</p>
+  </header>
+
+  <div class="clock" role="img" aria-label="Speaker A from 0:00 to 2:15, Speaker B from 2:15 to 5:00">
+    <div class="ca"><span>Speaker A · slides 01–05</span><span>0:00 – 2:15</span></div>
+    <div class="cb"><span>Speaker B · slides 06–14</span><span>2:15 – 5:00</span></div>
+  </div>
+
+  <div class="legend">
+    <span><span class="src">As per SEBI</span> say the source out loud</span>
+    <span><i>[pause]</i> stage direction, don't read it</span>
+    <span class="opt" style="opacity:1">Faded lines are optional</span>
+  </div>
+
+  <!-- ============ SPEAKER A ============ -->
+  <section class="part A">
+    <div class="part-head"><h2>Speaker A</h2><span class="who">Hook · Problem · Solution</span></div>
+    <p class="note">Your job is energy. Speak slowly on the big numbers and let them land. Short sentences, eye contact on every pause.</p>
+
+    <article class="slide">
+      <header><h3>01 · Title</h3><span class="t">0:00 – 0:10</span></header>
+      <p>Good afternoon. We're TradeSim, from IEM Kolkata. I'm [Name], and with me is [Name].</p>
+      <p>Let me start with one number.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>02 · The loss</h3><span class="t">0:10 – 0:45</span></header>
+      <p><span class="src">As per SEBI's latest study</span>, released this August, individual traders in India lost <b>₹91,685 crore</b> in equity derivatives last financial year.</p>
+      <p><span class="cue">[Pause two seconds. Look at the judges.]</span></p>
+      <p>That's not paper money. That's savings.</p>
+      <p>The same study says <b>close to 88 percent</b> of these traders lost money. That's <b>78 lakh people</b>, losing about <b>₹1.17 lakh each</b>, on average. In one year.</p>
+      <p class="opt">And it's not a one-off. <span class="src">SEBI's earlier study</span> found 93 percent lost money across FY22 to FY24.</p>
+      <p><span class="cue">[Slow down.]</span> The problem isn't just that people are losing. It's that they are <b>learning by losing</b>.</p>
+      <p class="say">Say it as: "ninety-one thousand, six hundred and eighty-five crore" · "one lakh seventeen thousand"</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>03 · The problem</h3><span class="t">0:45 – 1:20</span></header>
+      <p>And the youngest traders lose the most.</p>
+      <p><span class="src">According to SEBI's trader behaviour study</span>, <b>43 percent</b> of F&amp;O traders are now under 30. In FY23, it was 31 percent.</p>
+      <p><span class="cue">[Point to the dot grid.]</span> Out of every 100 of them, <b>89 lost money</b>.</p>
+      <p>And <b>73 percent</b> earn under five lakh rupees a year. They're practising with money they cannot afford to lose.</p>
+      <p><span class="src">SEBI's Investor Survey 2025</span> found that 74 percent of people who don't invest say the market feels too complex.</p>
+      <p>They don't need another video. <b>They need a place to practise.</b></p>
+    </article>
+
+    <article class="slide">
+      <header><h3>04 · The solution</h3><span class="t">1:20 – 1:50</span></header>
+      <p>That's why we built TradeSim.</p>
+      <p>It's a trading simulator on the real market. <b>Live NSE and BSE prices</b>, the same candles you'd see on a broker's screen.</p>
+      <p>Students use real order types: market, limit and stop orders. Intraday or delivery. Buy or short.</p>
+      <p>But the money is virtual. So a mistake costs a lesson, <b>not a salary</b>.</p>
+      <p>And these are actual product screens, not mock-ups.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>05 · How it works</h3><span class="t">1:50 – 2:15</span></header>
+      <p>Here's how a class uses it.</p>
+      <p><b>One</b>, a faculty member opens a room and sets the time, the virtual capital and the rules.</p>
+      <p><b>Two</b>, students join with a room code. No demat account, no KYC, no money.</p>
+      <p><b>Three</b>, they trade the live market.</p>
+      <p><b>Four</b>, a live leaderboard ranks everyone on profit and loss, and faculty can see every single trade.</p>
+      <p>The whole setup takes under five minutes.</p>
+      <p><span class="cue">[Turn to Speaker B.]</span> So how big can this get? Over to [Name].</p>
+    </article>
+  </section>
+
+  <div class="handoff">Handover · 2:15 · Speaker B clicks to slide 06</div>
+
+  <!-- ============ SPEAKER B ============ -->
+  <section class="part B">
+    <div class="part-head"><h2>Speaker B</h2><span class="who">Market · Money · Close</span></div>
+    <p class="note">Your job is trust. Every number here is on the slide behind you, so you never need to memorise digits. Read the "say it as" line once before the pitch. Calm pace, no rushing. If a word feels hard, say the simpler version; the meaning stays the same.</p>
+
+    <article class="slide">
+      <header><h3>06 · Market opportunity</h3><span class="t">2:15 – 2:40</span></header>
+      <p>Thank you, [Name].</p>
+      <p><span class="src">As per the government's AISHE survey</span>, India has about <b>four and a half crore</b> students in higher education. These are tomorrow's first-time investors.</p>
+      <p>About <b>one point one crore</b> of them study commerce, management or engineering.</p>
+      <p>And <span class="src">NSE's Market Pulse report</span> says <b>59 percent</b> of new investors this year are under 30.</p>
+      <p>Our first-year goal is focused. <b>60 colleges in West Bengal</b>, about <b>32,000 students</b>. We'll pitch 1,200 colleges and aim to sign 60. That's a five percent success rate.</p>
+      <p class="say">Say it as: "thirty-two thousand students" · "twelve hundred colleges"</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>07 · Competition</h3><span class="t">2:40 – 3:05</span></header>
+      <p>Now, we're not the only trading tool out there, and we won't pretend to be.</p>
+      <p>Seekho and Zerodha Varsity teach. TradingView and Sensibull are built for active traders. StockGro runs contests on a consumer app.</p>
+      <p>What colleges don't have is a tool their <b>own faculty can run and audit</b>, for a full course, not a one-day event.</p>
+      <p>That's the space TradeSim is built for.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>08 · Traction</h3><span class="t">3:05 – 3:20</span></header>
+      <p>And it's already working.</p>
+      <p>We piloted TradeSim with <b>more than 1,000 MBA students at IEM</b>, on live market data, with <b>zero rupees at risk</b>.</p>
+      <p>What you see on screen is the product students are already using.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>09 · Business model</h3><span class="t">3:20 – 3:45</span></header>
+      <p>Our business model is simple. <b>Colleges pay. Students learn free.</b></p>
+      <p>A college buys a yearly licence, starting at <b>fifty thousand rupees</b> for up to 200 students, and going up to <b>two lakh</b> for up to 2,000 students.</p>
+      <p>That's between <b>100 and 250 rupees per student</b>, per year.</p>
+      <p>For individuals, there's a free version with ads, and a paid plan at <b>99 rupees a month</b>.</p>
+      <p class="opt">For comparison, Seekho charges 199 rupees a month, and Sensibull Lite charges 800.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>10 · Unit economics</h3><span class="t">3:45 – 4:10</span></header>
+      <p>Here's what year one looks like, with 60 colleges.</p>
+      <p>Revenue is about <b>fifty-three lakh rupees</b>. Almost all of it comes from colleges. Costs are <b>fifty lakh</b>, and the biggest one is cloud.</p>
+      <p>So we <b>break even in year one</b>.</p>
+      <p>Each student brings in about 151 rupees and costs about 52 to serve.</p>
+      <p>Signing a college costs us about <b>twenty thousand rupees</b>, and we earn that back in about <b>four and a half months</b>. Every renewal after that is margin.</p>
+      <p class="say">Say it as: "fifty-three lakh" (not 53.25) · "one fifty-one" and "fifty-two" rupees</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>11 · Growth plan</h3><span class="t">4:10 – 4:30</span></header>
+      <p>From there, we grow one campus at a time.</p>
+      <p><b>60 colleges</b> in year one. <b>150</b> in year two. <b>300</b> in year three. That's about <b>1.6 lakh students</b> and about <b>two point seven crore rupees</b> in revenue.</p>
+      <p>These are targets, not results. And even year three is only about <b>13 percent</b> of West Bengal's institutions, <span class="src">as per AISHE</span>. We have room to grow before we even leave the state.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>12 · What's next</h3><span class="t">4:30 – 4:40</span></header>
+      <p>Today, hosted competitions are live and running at IEM.</p>
+      <p>In the next 12 months, we add an <b>AI trade coach</b> that reviews each trade and explains the mistake in plain language.</p>
+      <p class="opt">And within 24 months, campus analytics and inter-college leagues.</p>
+    </article>
+
+    <article class="slide">
+      <header><h3>13 · Close</h3><span class="t">4:40 – 4:55</span></header>
+      <p>Today, India learns to trade at full price.</p>
+      <p><span class="cue">[Pause two seconds.]</span></p>
+      <p>We want students to <b>learn on TradeSim first</b>. Over a thousand students at IEM already do.</p>
+      <p>Bring the next room to your campus. <b>We set it up. Your faculty runs it.</b></p>
+    </article>
+
+    <article class="slide">
+      <header><h3>14 · Thank you</h3><span class="t">4:55 – 5:00</span></header>
+      <p>Thank you. We're happy to take your questions.</p>
+      <p><span class="cue">[Both speakers stand together. Speaker B takes numbers questions, Speaker A takes product questions.]</span></p>
+    </article>
+  </section>
+
+  <!-- ============ Q&A ============ -->
+  <section class="part B">
+    <div class="part-head"><h2>If the judges ask</h2><span class="who">Short answers for Q&amp;A</span></div>
+    <dl>
+      <div><dt>"How are you different from StockGro?"</dt>
+        <dd>StockGro is a consumer app that runs contests as events. TradeSim is licensed by the college, runs for a whole course, and faculty can see and audit every trade.</dd></div>
+      <div><dt>"Where does your live market data come from?"</dt>
+        <dd>We've budgeted seven lakh rupees a year for licensed market data, based on NSE's published vendor price list.</dd></div>
+      <div><dt>"Why would a college pay for this?"</dt>
+        <dd>It costs 100 to 250 rupees per student a year. That's within what colleges already pay for campus software, which is roughly 99 to 279 rupees per student.</dd></div>
+      <div><dt>"Is a five percent sign-up rate realistic?"</dt>
+        <dd>It's a target, and a conservative one. We start with warm leads in the IEM and UEM network and use the pilot as proof.</dd></div>
+      <div><dt>"Where do ads and paid users come from?"</dt>
+        <dd>We assume about 10,000 free users and around two percent paying, which is in line with subscription app benchmarks. Together that's only four and a half lakh rupees. The business works without it.</dd></div>
+      <div><dt>"Your team cost is only three lakh?"</dt>
+        <dd><span class="confirm">[Confirm before the pitch]</span> In year one, the founding team isn't drawing salaries. The three lakh covers part-time help.</dd></div>
+    </dl>
+  </section>
+
+  <section class="part A">
+    <div class="part-head"><h2>What changed from the old script</h2><span class="who">For the team</span></div>
+    <ul class="changes">
+      <li>All numbers now match the deck. The old script said ₹199 per student, 1 lakh students in year one, 80% margin and 4:1 LTV to CAC. The deck now says ₹100–250 per student, 32,000 students, 66% contribution and 5:1.</li>
+      <li>The AI claims are gone from the solution. The deck says the AI coach ships in 12 months, so it now only appears under "What's next".</li>
+      <li>Removed Jane Street, the "1,000 concurrent users" architecture line and the "Explainable AI moat". None of these are on the slides, and each invites a question we can't back up on stage.</li>
+      <li>Competition no longer claims we're the only one. It names StockGro openly, so the judges can't catch us out.</li>
+      <li>The 93% figure is kept only as "SEBI's earlier study, FY22 to FY24". The headline figure is the FY26 one: close to 88%.</li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>
